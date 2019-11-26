@@ -145,13 +145,24 @@ let rendererConfig = {
         new htmlWebpackPlugin({
             filename: 'index.html',
             template: path.resolve(__dirname, '../src/index.ejs'),
+            templateParameters(compilation, assets, options) {
+              return {
+                compilation: compilation,
+                webpack: compilation.getStats().toJson(),
+                webpackConfig: compilation.options,
+                htmlWebpackPlugin: {
+                  files: assets,
+                  options: options
+                },
+                process,
+              };
+            },
             minify: {
                 collapseWhitespace: true,
                 removeAttributeQuotes: true,
                 removeComments: true
               },
             nodeModules: false
-            
         }),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin()
